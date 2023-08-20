@@ -154,3 +154,28 @@ func (c *rawUDPConn) WriteFromTo(b []byte, from *net.UDPAddr, to *net.UDPAddr) (
 func (c *rawUDPConn) Close() error {
 	return c.conn.Close()
 }
+
+func transparentDgramControlFunc(network, address string, conn syscall.RawConn) error {
+	var operr error
+	if err := conn.Control(func(fd uintptr) {
+		level := syscall.SOL_IP
+		transOptName := syscall.IP_TRANSPARENT
+		origDstOptName := syscall.IP_RECVORIGDSTADDR
+		switch network {
+		case "tcp6", "udp6", "ip6":
+			level = syscall.SOL_IPV6
+			transOptName = IPV6_TRANSPARENT
+			origDstOptName = IPV6_RECVORIGDSTADDR
+		}
+
+		operr = syscall.SetsockoptInt(int(fd), level, transOptName, 1)
+		if operr != nil {
+			return
+		}
+		operr = syscall.SetsockoptInt(int(fd), level, origDstOptName, 1)
+	}); err != nil {
+		return err
+	}
+	return operr
+}
+

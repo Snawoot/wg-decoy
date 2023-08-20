@@ -1,13 +1,18 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
+
+	"github.com/Snawoot/wg-decoy/server"
 )
 
 const (
@@ -47,6 +52,21 @@ func cmdClient(serverAddr string, localPort uint16) int {
 
 func cmdServer() int {
 	log.Println("starting wg-decoy server")
+
+	appCtx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer cancel()
+
+	srvCfg := server.Config{
+		BindAddress: *bindAddress,
+		ClientReq:   []byte(*clientReq),
+		ServerResp:  []byte(*serverResp),
+	}
+	_, err := server.New(appCtx, &srvCfg)
+	if err != nil {
+		log.Fatalf("can't start server: %v", err)
+	}
+
+	<-appCtx.Done()
 	return 0
 }
 
