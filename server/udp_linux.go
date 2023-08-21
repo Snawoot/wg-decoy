@@ -178,4 +178,3 @@ func transparentDgramControlFunc(network, address string, conn syscall.RawConn) 
 	}
 	return operr
 }
-
