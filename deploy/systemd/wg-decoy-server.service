@@ -1,0 +1,16 @@
+# /etc/systemd/system/dns44.service
+[Unit]
+Description=Wireguard handshake decoy server
+After=network.target network-online.target
+Requires=network-online.target
+
+[Service]
+EnvironmentFile=-/etc/default/wg-decoy-server
+ExecStart=/usr/local/bin/wg-decoy server $OPTIONS
+Restart=always
+KillMode=process
+TimeoutStartSec=5
+TimeoutStopSec=5
+
+[Install]
+WantedBy=default.target
