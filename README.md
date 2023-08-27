@@ -2,7 +2,13 @@
 
 Decoy handshake for Wireguard. Allows some initial exchange between wireguard server and client in order to derail DPI filtering.
 
-## Building
+## Installation
+
+### Binaries
+
+Pre-built binaries are available [here](https://github.com/Snawoot/wg-decoy/releases/latest).
+
+### Build from source
 
 Run in the source directory:
 
@@ -18,7 +24,9 @@ Alternatively, you may invoke Go directly:
 go build ./cmd/wg-decoy -o bin/wg-decoy
 ```
 
-## Running on server (Linux only)
+## Running application
+
+## Server (Linux only)
 
 Add iptables rule to capture small packets targeted to wireguard port:
 
@@ -34,7 +42,7 @@ Then just run server:
 wg-decoy server
 ```
 
-## Running on client
+### Client
 
 Make sure you use some random but fixed port in your wireguard config like this:
 
