@@ -2,6 +2,22 @@
 
 Decoy handshake for Wireguard. Allows some initial exchange between wireguard server and client in order to derail DPI filtering.
 
+## Building
+
+Run in the source directory:
+
+```
+make
+```
+
+Binary will be available in the `bin` directory.
+
+Alternatively, you may invoke Go directly:
+
+```
+go build ./cmd/wg-decoy -o bin/wg-decoy
+```
+
 ## Running on server (Linux only)
 
 Add iptables rule to capture small packets targeted to wireguard port:
